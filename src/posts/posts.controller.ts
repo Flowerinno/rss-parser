@@ -3,11 +3,11 @@ import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
-    constructor(private postService: PostsService) { }
-    
+  constructor(private service: PostsService) {}
+
   @Get()
   getPosts() {
-      
+    return this.service.getPostsFromDB();
   }
 
   @Post()
@@ -15,4 +15,8 @@ export class PostsController {
 
   @Delete()
   deletePost() {}
+
+  @Post()
+  searchPosts() { }
+  
 }
