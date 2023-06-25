@@ -1,6 +1,4 @@
 export class CreatePostDto {
-  id?: number;
-
   creator?: string;
 
   title?: string;
@@ -9,9 +7,15 @@ export class CreatePostDto {
 
   pubDate?: string;
 
+  dcCreator?: string;
+
   content?: string;
 
   contentSnippet?: string;
 
-  categories?: string;
+  categories?: string[] | string;
+
+  guid?: string;
+
+  isoDate?: string;
 }

@@ -17,12 +17,21 @@ export class Posts extends BaseEntity {
   @Column()
   pubDate: string;
 
-  @Column()
+  @Column({ default: 'None' })
+  dcCreator?: string;
+
+  @Column({ length: 2000 })
   content: string;
 
-  @Column()
+  @Column({ length: 1000 })
   contentSnippet: string;
 
   @Column()
+  guid: string;
+
+  @Column({ length: 1000 })
   categories: string;
+
+  @Column({ default: 'None' })
+  isoDate?: string;
 }

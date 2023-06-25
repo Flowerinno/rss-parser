@@ -1,6 +1,4 @@
 export interface IPost {
-  id?: number;
-
   creator?: string;
 
   title?: string;
@@ -9,9 +7,15 @@ export interface IPost {
 
   pubDate?: string;
 
+  dcCreator?: string;
+
   content?: string;
 
   contentSnippet?: string;
 
-  categories?: string;
+  categories?: string[] | string;
+
+  guid?: string;
+
+  isoDate?: string;
 }
