@@ -1,4 +1,4 @@
-import React from "react";
+//page
 import SignInComponent from "../components/SignInComponent";
 
 const SignIn = () => {
