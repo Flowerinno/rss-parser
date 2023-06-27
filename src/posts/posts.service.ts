@@ -42,15 +42,21 @@ export class PostsService {
 
   async createPost(createPostDto: CreatePostDto) {
     const { categories, ...rest } = createPostDto;
+    console.log(createPostDto);
     let strCategories;
     if (Array.isArray(categories)) {
       strCategories = categories.join(',');
     } else {
-      strCategories = String(categories);
+      strCategories = categories;
     }
 
     try {
-      await this.repository.save({ ...rest, categories: strCategories });
+      const newPost = this.repository.create({
+        ...rest,
+        categories: strCategories,
+      });
+      await this.repository.save(newPost);
+      return 'Successfully created a post!';
     } catch (error) {
       throw new Error('Failed to create new post, try again later!');
     }
@@ -119,14 +125,14 @@ export class PostsService {
     }
   }
 
-  // @Cron('* * * * * *')
-  // async handleCron(): Promise<string> {
-  //   try {
-  //     let currentPosts = await this.fetchPostsFromFeed();
-  //     let dbFeed: any = await this.getPostsFromDB();
-  //     await this.compareFeed(dbFeed.posts, currentPosts);
-  //   } catch (err) {
-  //     return err.message;
-  //   }
-  // }
+  @Cron('*/10 * * * *')
+  async handleCron(): Promise<string> {
+    try {
+      let currentPosts = await this.fetchPostsFromFeed();
+      let dbFeed: any = await this.getPostsFromDB();
+      await this.compareFeed(dbFeed.posts, currentPosts);
+    } catch (err) {
+      return err.message;
+    }
+  }
 }

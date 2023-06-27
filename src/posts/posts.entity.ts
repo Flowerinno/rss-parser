@@ -14,7 +14,7 @@ export class Posts extends BaseEntity {
   @Column()
   link: string;
 
-  @Column()
+  @Column({ default: 'None' })
   pubDate: string;
 
   @Column({ default: 'None' })
