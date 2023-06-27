@@ -13,7 +13,7 @@ export class CreatePostDto {
 
   contentSnippet?: string;
 
-  categories?: string[] | string;
+  categories?: string[] | string | null;
 
   guid?: string;
 

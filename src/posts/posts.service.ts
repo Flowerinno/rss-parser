@@ -17,16 +17,15 @@ export class PostsService {
 
   async findPost(id: number) {
     try {
-      this.repository.findOne({ where: { id } });
+      return await this.repository.findOne({ where: { id } });
     } catch (error) {
       return 'Failed to find the post';
     }
   }
 
-  async updatePost(id: number, body: IPost) {
+  async updatePost(id: number, body: any) {
     try {
-      const updatedBody = { ...body, categories: body.categories as string };
-      this.repository.update(id, updatedBody);
+      await this.repository.update(id, body);
     } catch (error) {
       return 'Failed to update the post';
     }
@@ -57,12 +56,18 @@ export class PostsService {
     }
   }
 
-  async searchPosts(title: string) {
+  async searchPosts(title: string = null) {
     try {
+      if (!title) {
+        const res = await this.getPostsFromDB();
+        return res;
+      }
+
       let foundPosts = await this.repository.find({
         where: { title: Like(`%${title}%`) },
       });
-      return foundPosts;
+
+      return { posts: foundPosts, page: Math.ceil(foundPosts.length / 10) };
     } catch (error) {
       return `Failed to find posts with ${title} paramaters`;
     }
@@ -76,25 +81,24 @@ export class PostsService {
         posts = await this.compareFeed([], await this.fetchPostsFromFeed());
       }
 
+      const page = Math.floor(posts.length / 10);
       if (count && count * 10 <= posts.length) {
-        const step = count * 10;
-        posts = posts.slice(step, step + 10);
-        return posts;
+        posts = posts.slice(count * 10, count * 10 + 10);
+        return { posts, page: page };
       }
 
-      return posts || [];
+      return { posts, page } || [];
     } catch (error) {
       throw new Error('Failed to fetch posts, please try again later!');
     }
   }
 
-  async compareFeed(dbFeed: Posts[] | [], feed: Posts[]) {
+  async compareFeed(dbFeed: any = [], feed: Posts[]) {
     let newItems = [];
 
     if (feed.length > dbFeed.length) {
       newItems = feed.slice(feed.length - (feed.length - dbFeed.length));
 
-      console.log('New posts found');
       for (const item of newItems) {
         await this.createPost(item);
       }
@@ -115,14 +119,14 @@ export class PostsService {
     }
   }
 
-  @Cron('*/10 * * * *')
-  async handleCron(): Promise<string> {
-    try {
-      let currentPosts = await this.fetchPostsFromFeed();
-      let dbFeed = await this.getPostsFromDB();
-      await this.compareFeed(dbFeed, currentPosts);
-    } catch (err) {
-      return err.message;
-    }
-  }
+  // @Cron('* * * * * *')
+  // async handleCron(): Promise<string> {
+  //   try {
+  //     let currentPosts = await this.fetchPostsFromFeed();
+  //     let dbFeed: any = await this.getPostsFromDB();
+  //     await this.compareFeed(dbFeed.posts, currentPosts);
+  //   } catch (err) {
+  //     return err.message;
+  //   }
+  // }
 }
