@@ -68,12 +68,18 @@ export class PostsService {
     }
   }
 
-  async getPostsFromDB() {
+  async getPostsFromDB(count: number = null) {
     try {
       let posts = await this.repository.find();
 
       if (!posts.length) {
         posts = await this.compareFeed([], await this.fetchPostsFromFeed());
+      }
+
+      if (count && count * 10 <= posts.length) {
+        const step = count * 10;
+        posts = posts.slice(step, step + 10);
+        return posts;
       }
 
       return posts || [];

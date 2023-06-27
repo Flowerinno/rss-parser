@@ -15,8 +15,8 @@ export class PostsController {
   constructor(private service: PostsService) {}
 
   @Get()
-  getPosts() {
-    const res = this.service.getPostsFromDB();
+  getPosts(@Query() query) {
+    const res = this.service.getPostsFromDB(query.count);
     return res;
   }
 
