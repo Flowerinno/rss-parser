@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Box } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import List from "@mui/material/List";
 import { Pagination } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import FeedItem from "./FeedItem";
-import { Divider } from "@mui/material";
 import Header from "./Header";
 import { fetchPosts } from "../redux/features/postsSlice";
-import { AnyAction } from "@reduxjs/toolkit";
 
 const FeedComponent = () => {
 	const dispatch = useAppDispatch();
@@ -23,23 +21,23 @@ const FeedComponent = () => {
 		dispatch(fetchPosts(value));
 	};
 
-	const feed = useAppSelector((state) => state.posts.posts);
+	const { posts: feed, page } = useAppSelector((state) => state.posts);
 
 	return (
 		<Box sx={{ height: "100%", position: "relative" }}>
 			<Header />
 			<List
 				sx={{
-					width: "90%",
+					width: "100%",
 					bgcolor: "background.paper",
 					height: "100%",
 					marginTop: "3%",
 					padding: "30px",
 				}}
 			>
-				{feed.length ? (
+				{feed?.length ? (
 					feed.map((post) => {
-						return <FeedItem key={post.guid} post={post} />;
+						return <FeedItem key={post.id} post={post} />;
 					})
 				) : (
 					<Button
@@ -50,9 +48,8 @@ const FeedComponent = () => {
 					</Button>
 				)}
 			</List>
-			<Button>Add post</Button>
 			<Pagination
-				count={10}
+				count={page}
 				variant="outlined"
 				sx={{ position: "absolute", left: "2%", top: "8%", padding: "15px" }}
 				onChange={handlePagination}

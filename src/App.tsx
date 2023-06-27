@@ -4,6 +4,8 @@ import SignIn from "./pages/SignIn";
 import { useAppSelector } from "./redux/hooks";
 import { useNavigate } from "react-router-dom";
 import Feed from "./pages/Feed";
+import CustomizedDialog from "./components/Modal";
+import { NewPost } from "./pages/NewPost";
 
 function App() {
 	const accessToken = useAppSelector((state) => state.user.token);
@@ -16,10 +18,14 @@ function App() {
 	}, [accessToken, navigate]);
 
 	return (
-		<Routes>
-			<Route element={<SignIn />} path="/" />
-			<Route element={<Feed />} path="/feed" />
-		</Routes>
+		<>
+			<CustomizedDialog />
+			<Routes>
+				<Route element={<SignIn />} path="/" />
+				<Route element={<Feed />} path="/feed" />
+				<Route element={<NewPost />} path="/new-post" />
+			</Routes>
+		</>
 	);
 }
 

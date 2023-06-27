@@ -17,7 +17,6 @@ export interface RootState {
 	modal: { isOpen: boolean };
 }
 
-
 const rootReducer: Reducer<RootState> = combineReducers<RootState>({
 	user: userReducer,
 	posts: postsReducer,

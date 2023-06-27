@@ -2,15 +2,25 @@ import React from "react";
 import { PostI } from "../redux/features/postsSlice";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { Typography, Divider, Button } from "@mui/material";
+import { Typography, Divider, Button, ButtonGroup } from "@mui/material";
+import { useAppDispatch } from "../redux/hooks";
+import { openDialog } from "../redux/features/modalSlice";
+import { findPost } from "../redux/features/postsSlice";
 
 interface FeedItemProps {
 	post: PostI;
 }
 
 const FeedItem: React.FC<FeedItemProps> = ({ post }) => {
+	const dispatch = useAppDispatch();
+
+	const handleModal = (id: number = 1) => {
+		dispatch(findPost(id));
+		dispatch(openDialog(id));
+	};
+
 	return (
-		<ListItem alignItems="center" sx={{ maxWidth: "70%" }}>
+		<ListItem alignItems="center" sx={{ maxWidth: "70%", cursor: "pointer" }}>
 			<ListItemText
 				primary={post.title}
 				secondary={
@@ -32,7 +42,9 @@ const FeedItem: React.FC<FeedItemProps> = ({ post }) => {
 					</React.Fragment>
 				}
 			/>
-			<Button>Del</Button>
+			<ButtonGroup sx={{ marginLeft: 5 }}>
+				<Button onClick={() => handleModal(post.id)}>Edit</Button>
+			</ButtonGroup>
 		</ListItem>
 	);
 };
