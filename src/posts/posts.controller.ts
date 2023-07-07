@@ -7,27 +7,33 @@ import {
   Param,
   Query,
   Req,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { IPost } from './posts.types';
 import { Request } from 'express';
-import { ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller('posts')
 export class PostsController {
   constructor(private service: PostsService) {}
 
   @Get()
-  @ApiQuery({ name: 'count', required: false, type: Number })
+  @ApiQuery({ example: 1, name: 'count', required: false, type: Number })
   async getPosts(@Query() query) {
     const res = await this.service.getPostsFromDB(query.count);
     return res;
   }
 
   @Get(':postId')
-  @ApiParam({ name: 'postId', required: true, type: String })
-  async findPost(@Param() params) {
-    const res = await this.service.findPost(params.postId);
+  @ApiParam({
+    name: 'postId',
+    required: true,
+    type: String,
+    description: 'Find post by postId',
+  })
+  async findPost(@Param('postId', ParseIntPipe) postId: number) {
+    const res = await this.service.findPost(postId);
 
     return res;
   }
@@ -40,6 +46,8 @@ export class PostsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a post' })
+  @ApiResponse({ status: 201, description: 'Successfully created a post' })
   async createPost(@Body() body: IPost) {
     const res = await this.service.createPost(body);
     return res;
@@ -48,8 +56,7 @@ export class PostsController {
   @Delete(':postId')
   @ApiParam({ name: 'postId', required: true, type: String })
   async deletePost(@Param() params) {
-    const res = await this.service.deletePost(params.postId);
-    return res;
+    return this.service.deletePost(params.postId);
   }
 
   @Get('search')

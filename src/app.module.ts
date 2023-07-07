@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+    UsersModule,
     PostsModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
@@ -27,7 +28,6 @@ import { UsersModule } from './users/users.module';
     }),
     ScheduleModule.forRoot(),
     AuthModule,
-    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

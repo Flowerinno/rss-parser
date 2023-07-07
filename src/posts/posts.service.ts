@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Posts } from './posts.entity';
 import { Like, Repository } from 'typeorm';
@@ -16,11 +16,13 @@ export class PostsService {
   ) {}
 
   async findPost(id: number) {
-    try {
-      return await this.repository.findOne({ where: { id } });
-    } catch (error) {
-      return 'Failed to find the post';
+    const post = await this.repository.findOne({ where: { id } });
+
+    if (!post) {
+      throw new NotFoundException();
     }
+
+    return post;
   }
 
   async updatePost(id: number, body: any) {
@@ -32,12 +34,7 @@ export class PostsService {
   }
 
   async deletePost(id: number) {
-    try {
-      await this.repository.delete(id);
-      return 'Successufully deleted the post.';
-    } catch (error) {
-      return 'Failed to delete the post, please try again.';
-    }
+    return this.repository.delete(id);
   }
 
   async createPost(createPostDto: CreatePostDto) {
